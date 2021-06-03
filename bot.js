@@ -106,9 +106,9 @@ client.on('message', msg => {
             case 'study':
                 if (!args[1]) {
                     Embed = new Discord.MessageEmbed()
-                        .setTitle("Comando .timer")
+                        .setTitle("Comando .study")
                         .setColor('#FF0000')
-                        .setDescription('Para crear un temporizador escibre:: .timer <tiempo en minutos> y después confirma')
+                        .setDescription('Para crear un temporizador escribe:: .timer <tiempo en minutos> y después confirma')
                         .setFooter('4M-77 *beta*', client.user.avatarURL)
                         .setTimestamp()
                         .addField('____','*Este comando está en fase de pruebas*')
