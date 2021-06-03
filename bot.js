@@ -108,7 +108,7 @@ client.on('message', msg => {
                     Embed = new Discord.MessageEmbed()
                         .setTitle("Comando .study")
                         .setColor('#FF0000')
-                        .setDescription('Para crear un temporizador escribe:: .timer <tiempo en minutos> y después confirma')
+                        .setDescription('Para crear un temporizador escribe:: .study <tiempo en minutos> y después confirma')
                         .setFooter('4M-77 *beta*', client.user.avatarURL)
                         .setTimestamp()
                         .addField('____','*Este comando está en fase de pruebas*')
@@ -141,19 +141,40 @@ client.on('message', msg => {
                                 .setTimestamp()
                                 .addField(`Tiempo:`, ` *${args[1]} minutos*`)
                                 .addField(`Termina:`,` ${add_minutes(new Date() ,args[1])}`)
-                                .addField('Puedes cancelar el temporizador dando a 🛑', "___________________________________")
+                                .addField('Puedes cancelar el temporizador dando a 🛑', "___________________________________");
+
+                                serverLog.send('**---EVENT INFO---**');
+                                serverLog.send('Type: *STUDY TIMER ON*');
+                                serverLog.send(`Time: *${new Date()}*`);
+                                serverLog.send(`Info: *Timer of ${args[1]} minutes initiated by ${msg.author.username}*`);
+                                serverLog.send('**---------------------**');
+
                             msg.channel.send(Embed).then( m => {
                                 m.react("🛑");
                                 var t = setTimeout(() => { 
                                     m.delete();
                                     msg.channel.send(`Tiempo de estudio finalizado: ${args[1]} minutos 📚⌛`);
+
+                                    serverLog.send('**---EVENT INFO---**');
+                                    serverLog.send('Type: *STUDY TIMER ENDED*');
+                                    serverLog.send(`Time: *${new Date()}*`);
+                                    serverLog.send(`Info: *Timer of ${args[1]} minutes ended*`);
+                                    serverLog.send('**---------------------**');
+
                                     return;
                                 }, args[1]*60000);
                                 m.awaitReactions((reaction) => reaction.emoji.name == '🛑', { max: 2 }).then( collected => {
-                                    if (collected.size > 1) {
+                                    if (collected.size > 0) {
                                         clearTimeout(t);
                                         m.delete();
                                         msg.channel.send('Temporizador anulado 🛑');
+
+                                        serverLog.send('**---EVENT INFO---**');
+                                        serverLog.send('Type: *STUDY TIMER STOPPED*');
+                                        serverLog.send(`Time: *${new Date()}*`);
+                                        serverLog.send(`Info: *Timer of ${args[1]} minutes stopped by ...*`);
+                                        serverLog.send('**---------------------**');
+
                                         return;
                                     }
                                 })
