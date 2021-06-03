@@ -164,7 +164,7 @@ client.on('message', msg => {
                                     return;
                                 }, args[1]*60000);
                                 m.awaitReactions((reaction) => reaction.emoji.name == '🛑', { max: 2 }).then( collected => {
-                                    if (collected.size > 0) {
+                                    if (collected.size > 1) {
                                         clearTimeout(t);
                                         m.delete();
                                         msg.channel.send('Temporizador anulado 🛑');
@@ -174,8 +174,6 @@ client.on('message', msg => {
                                         serverLog.send(`Time: *${new Date()}*`);
                                         serverLog.send(`Info: *Timer of ${args[1]} minutes stopped by ...*`);
                                         serverLog.send('**---------------------**');
-
-                                        return;
                                     }
                                 })
                             });
@@ -187,7 +185,7 @@ client.on('message', msg => {
                 if (!args[1]) {
                     serverLog.send('**---EVENT INFO---**');
                     serverLog.send('Type: *FAILED INVOCATION*');
-                    serverLog.send(`Time: *${Date.now()}*`);
+                    serverLog.send(`Time: *${new Date()}*`);
                     serverLog.send('Info: *Command not well initialiced*');
                     serverLog.send('**---------------------**');
                     return;
@@ -217,7 +215,7 @@ client.on('message', msg => {
                 if (!args[1]) {
                     serverLog.send('**---EVENT INFO---**');
                     serverLog.send('Type: *SECURITY VIOLATION*');
-                    serverLog.send(`Time: *${Date.now().toString()}*`);
+                    serverLog.send(`Time: *${new Date()}*`);
                     serverLog.send('Info: *Unauthorized use of shutdown command without password*');
                     serverLog.send('**---------------------**');
                     return;
@@ -226,15 +224,16 @@ client.on('message', msg => {
                 if (args[1] === '1234') {
                     serverLog.send('**---EVENT INFO---**');
                     serverLog.send('Type: SECURITY SHUTDOWN');
-                    serverLog.send(`Time: *${Date.now().toString()}*`);
+                    serverLog.send(`Time: *${new Date()}*`);
                     serverLog.send('**---------------------**').then( () => {
                         client.destroy() 
                     });
+                    return;
                 }
 
                 serverLog.send('**---EVENT INFO---**');
                 serverLog.send('Type: *SECURITY VIOLATION*');
-                serverLog.send(`Time: *${Date.now().toString()}*`);
+                serverLog.send(`Time: *${new Date()}*`);
                 serverLog.send('Info: *Unauthorized use of shutdown command with password:* ' + args[1]);
                 serverLog.send('**---------------------**');
                 return;
@@ -249,7 +248,7 @@ client.on('message', msg => {
     
                 serverLog.send('**---EVENT INFO---**');
                 serverLog.send('Type: *RECOGNITION ERROR*');
-                serverLog.send(`Time: *${Date.now().toString()}*`);
+                serverLog.send(`Time: *${new Date()}*`);
                 serverLog.send('Info: ' + `*Command -${args[0]}- not recognized.*`);
                 serverLog.send('**---------------------**');
                 console.error(`Command -${args[0]}- not recognized.`);
@@ -258,7 +257,7 @@ client.on('message', msg => {
     } catch (error) {
         serverLog.send('**---EVENT INFO---**');
         serverLog.send('Type: *ERROR*');
-        serverLog.send(`Time: *${Date.now().toString()}*`);
+        serverLog.send(`Time: *${new Date()}*`);
         serverLog.send('Info: *ERROR:: *' + error);
         serverLog.send('**---------------------**');
         console.error(`Command -${args[0]}- ERROR see LOG.`);
