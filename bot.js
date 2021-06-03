@@ -117,10 +117,15 @@ client.on('message', msg => {
                 Embed = new Discord.MessageEmbed()
                     .setTitle("CONFIRMACIÓN DE TEMPORIZADOR")
                     .setColor('#FF0000')
-                    .setDescription()
+                    .setDescription('Confimación de temporizador:')
+                    .addField(`Tiempo: *${args[1]} minutos*`)
+                    .addField(`Confima dando al 👍`)
                     .setFooter('4M-77', client.user.avatarURL)
                     .setTimestamp()
-                msg.channel.send(Embed);
+                msg.channel.send(Embed).then(messageReaction => {
+                    messageReaction.react("👍");
+                    setTimeout(() => msg.delete(), 500);
+                });
                 
 
                 return;
