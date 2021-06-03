@@ -46,6 +46,7 @@ client.on('message', msg => {
                 .addField('.ping', 'Puedes jugar conmigo al ping-pong')
                 .addField('.myavatar', 'Te puedo mostrar tu avatar en el chat')
                 .addField('.poll', 'Realiza una encuesta de SI y NO')
+                .addField('.study', 'Crea un temporizador para estudiar')
                 //.addField('.execute', 'Si eres fan de Star Wars este es tu comando');
                 msg.author.send(Embed);
                 return;
@@ -102,39 +103,70 @@ client.on('message', msg => {
                 });
                 return;
 
-            case 'timer':
+            case 'study':
                 if (!args[1]) {
                     Embed = new Discord.MessageEmbed()
                         .setTitle("Comando .timer")
                         .setColor('#FF0000')
-                        .setDescription('Para crear un temporizador escibre:: .timer <tiempo en minutos> y después confirma escribiendo: Y')
-                        .setFooter('4M-77', client.user.avatarURL)
+                        .setDescription('Para crear un temporizador escibre:: .timer <tiempo en minutos> y después confirma')
+                        .setFooter('4M-77 *beta*', client.user.avatarURL)
                         .setTimestamp()
+                        .addField('____','*Este comando está en fase de pruebas*')
                     msg.channel.send(Embed);
                     return;
                 }
 
                 Embed = new Discord.MessageEmbed()
-                    .setTitle("CONFIRMACIÓN DE TEMPORIZADOR")
+                    .setTitle("CONFIRMACIÓN DE TIEMPO DE ESTUDIO")
                     .setColor('#FF0000')
                     .setDescription('Confimación de temporizador:')
-                    .addField(`Tiempo: *${args[1]} minutos*`)
-                    .addField(`Confima dando al 👍`)
-                    .setFooter('4M-77', client.user.avatarURL)
+                    .setFooter('4M-77 *beta*', client.user.avatarURL)
                     .setTimestamp()
-                msg.channel.send(Embed).then(messageReaction => {
-                    messageReaction.react("👍");
-                    setTimeout(() => msg.delete(), 500);
+                    .addField(`Tiempo:`, `*${args[1]} minutos*`)
+                    .addField(`Confima dando al 👍`, "____________________")
+                msg.channel.send(Embed).then(message => {
+                    message.react("👍")
+                    message.awaitReactions((reaction, user) => user.id == msg.author.id && reaction.emoji.name == '👍', {max: 1, maxEmojis: 2, time: 5000}).then(collected => {
+                            message.delete();
+                            console.log(collected);
+                            if (collected.size < 1) {
+                                msg.channel.send('Temporizador anulado 🛑');
+                                return;
+                            }
+                            Embed = new Discord.MessageEmbed()
+                                .setTitle("INICIADO TIEMPO DE ESTUDIO 📚⏳")
+                                .setColor('#FF0000')
+                                .setDescription('Se ha iniciado un temporizador de estudio')
+                                .setFooter('4M-77 *beta*', client.user.avatarURL)
+                                .setTimestamp()
+                                .addField(`Tiempo:`, ` *${args[1]} minutos*`)
+                                .addField(`Termina:`,` ${add_minutes(new Date() ,args[1])}`)
+                                .addField('Puedes cancelar el temporizador dando a 🛑', "___________________________________")
+                            msg.channel.send(Embed).then( m => {
+                                m.react("🛑");
+                                var t = setTimeout(() => { 
+                                    m.delete();
+                                    msg.channel.send(`Tiempo de estudio finalizado: ${args[1]} minutos 📚⌛`);
+                                    return;
+                                }, args[1]*60000);
+                                m.awaitReactions((reaction) => reaction.emoji.name == '🛑', { max: 2 }).then( collected => {
+                                    if (collected.size > 1) {
+                                        clearTimeout(t);
+                                        m.delete();
+                                        msg.channel.send('Temporizador anulado 🛑');
+                                        return;
+                                    }
+                                })
+                            });
+                    });    
                 });
-                
-
                 return;
             
             case 'anounce':
                 if (!args[1]) {
                     serverLog.send('**---EVENT INFO---**');
                     serverLog.send('Type: *FAILED INVOCATION*');
-                    serverLog.send(`Time: *${Date.now().toString()}*`);
+                    serverLog.send(`Time: *${Date.now()}*`);
                     serverLog.send('Info: *Command not well initialiced*');
                     serverLog.send('**---------------------**');
                     return;
@@ -208,10 +240,16 @@ client.on('message', msg => {
         serverLog.send(`Time: *${Date.now().toString()}*`);
         serverLog.send('Info: *ERROR:: *' + error);
         serverLog.send('**---------------------**');
-        console.error(`Command -${args[0]}- not recognized.`);
+        console.error(`Command -${args[0]}- ERROR see LOG.`);
     }
 
 });
 
 // Bot login access
 client.login(process.env.DISCORD_TOKEN);
+
+
+// functions
+var add_minutes =  function (dt, minutes) {
+    return new Date(dt.getTime() + minutes*60000);
+}
