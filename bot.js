@@ -130,7 +130,7 @@ client.on('message', msg => {
                             message.delete();
                             console.log(collected);
                             if (collected.size < 1) {
-                                msg.channel.send('Temporizador anulado 🛑');
+                                msg.reply('Temporizador anulado 🛑');
                                 return;
                             }
                             Embed = new Discord.MessageEmbed()
@@ -148,12 +148,13 @@ client.on('message', msg => {
                                 serverLog.send(`Time: *${new Date()}*`);
                                 serverLog.send(`Info: *Timer of ${args[1]} minutes initiated by ${msg.author.username}*`);
                                 serverLog.send('**---------------------**');
-
+                            var deleted = false;
                             msg.channel.send(Embed).then( m => {
                                 m.react("🛑");
                                 var t = setTimeout(() => { 
                                     m.delete();
-                                    msg.channel.send(`Tiempo de estudio finalizado: ${args[1]} minutos 📚⌛`);
+                                    deleted = true;
+                                    msg.reply(`Tiempo de estudio finalizado: ${args[1]} minutos 📚⌛`);
 
                                     serverLog.send('**---EVENT INFO---**');
                                     serverLog.send('Type: *STUDY TIMER ENDED*');
@@ -163,11 +164,12 @@ client.on('message', msg => {
 
                                     return;
                                 }, args[1]*60000);
-                                m.awaitReactions((reaction) => reaction.emoji.name == '🛑', { max: 2 }).then( collected => {
-                                    if (collected.size > 1) {
+                                m.awaitReactions((reaction) => reaction.emoji.name == '🛑', { max: 2, maxEmojis: 2 }).then( collected => {
+                                    if (deleted === true) {return;}
+                                    if (collected.size > 0) {
                                         clearTimeout(t);
                                         m.delete();
-                                        msg.channel.send('Temporizador anulado 🛑');
+                                        msg.reply('Temporizador anulado 🛑');
 
                                         serverLog.send('**---EVENT INFO---**');
                                         serverLog.send('Type: *STUDY TIMER STOPPED*');
