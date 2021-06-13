@@ -104,6 +104,11 @@ client.on('message', msg => {
                 return;
 
             case 'study':
+                 if (msg.channel.name !==  '📓estudio') {
+                     msg.channel.send("El comando study solo funciona en el canal #📓estudio .")
+                     return;
+                 }
+
                 if (!args[1]) {
                     Embed = new Discord.MessageEmbed()
                         .setTitle("Comando .study")
