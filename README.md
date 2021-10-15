@@ -1,5 +1,5 @@
 # theWbot
-Discord bot for learning and practice purposes
+Discord bot created with javascript for a personal server with friends. The aim of creating this bot is learning about javascript, Discord.js and bots.
 
 ## Botcommands
 
