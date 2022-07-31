@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const Utils = require('./utilities.js');
+const Utils = require('./utilities');
 
 const study = function(msg, args, client, serverLog) {
     if (msg.channel.name !==  '📓estudio') {

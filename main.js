@@ -3,7 +3,6 @@ require('dotenv').config();
 
 // Prepare global variables and depencies 
 const Discord = require('discord.js');
-const Utils = require('./utilities.js');
 const client = new Discord.Client();
 const prefix = '.';
 const newsChannel = 'anuncios';
@@ -112,4 +111,4 @@ client.on('message', msg => {
 
 
 // Bot login access
-client.login(process.env.TEST_TOKEN);
+client.login(process.env.DISCORD_TOKEN);
